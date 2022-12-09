@@ -1,7 +1,8 @@
 package intro;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Solutions {
 
@@ -179,12 +180,13 @@ public class Solutions {
             return address.substring(address.lastIndexOf('@') + 1);
         }
     }
+
     public static class buildPalindrome_45 {
         public static String mySolution(String st) {
             StringBuilder initionalPart = new StringBuilder(st);
             StringBuilder additionalPart = new StringBuilder();
-            for(int i = 0; i < st.length() - 1; ) {
-                if(isPalindrome(initionalPart.toString())) {
+            for (int i = 0; i < st.length() - 1; ) {
+                if (isPalindrome(initionalPart.toString())) {
                     break;
                 }
 
@@ -193,8 +195,206 @@ public class Solutions {
             }
             return st + additionalPart.reverse();
         }
+
         private static boolean isPalindrome(String st) {
             return new StringBuilder(st).reverse().toString().equals(st);
+        }
+    }
+
+    public static class electionsWinners_46 {
+        public static int mySolution(int[] votes, int k) {
+            int ans = 1;
+            Arrays.sort(votes);
+            if (k == 0 && votes.length > 1 && votes[votes.length - 1] == votes[votes.length - 2]) {
+                return 0;
+            }
+
+            for (int i = 0; i < votes.length - 1; i++) {
+                if (votes[i] + k > votes[votes.length - 1]) {
+                    ans++;
+                }
+            }
+
+            return ans;
+        }
+
+        public static int bestSolution(int[] votes, int k) {
+            int max = Arrays.stream(votes).max().getAsInt();
+            return k == 0 ? Arrays.stream(votes).filter(x -> x == max).count() == 1 ? 1 : 0 : (int) Arrays.stream(votes).filter(x -> x + k > max).count();
+        }
+    }
+
+    public static class is_Mac48Address_47 {
+        public static boolean solution(String inputString) {
+            Character[] symbolAlphabet = new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+                    'A', 'B', 'C', 'D', 'E', 'F'};
+            List<Character> symbolList = Arrays.asList(symbolAlphabet);
+
+            String[] pairs = inputString.split("-", -1);
+            if (pairs.length != 6) {
+                return false;
+            }
+
+            for (int i = 0; i < 6; i++) {
+                if (pairs[i].length() != 2 || !symbolList.contains(pairs[i].charAt(0)) || !symbolList.contains(pairs[i].charAt(1))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static boolean goodSolution(String inputString) {
+            return inputString.matches("^([0-9A-F][0-9A-F]-){5}[0-9A-F][0-9A-F]$");
+        }
+
+    }
+
+    public static class isDigit_48 {
+        public static boolean mySolution(char symbol) {
+            try {
+                Integer.parseInt(Character.toString(symbol));
+                return true;
+            } catch (NumberFormatException exception) {
+                return false;
+            }
+        }
+
+        public static boolean solution(char symbol) {
+            return Character.isDigit(symbol);
+        }
+    }
+
+    public static class lineEncoding_49 {
+        public static String mySolution(String s) {
+            Character currentCh = '-';
+            StringBuilder ansSb = new StringBuilder();
+            int counter = 1;
+            char[] charr = s.toCharArray();
+            for (int i = 0; i < charr.length; i++) {
+
+                if (charr[i] != currentCh) {
+                    if (currentCh != '-') {
+                        if (counter > 1) {
+                            ansSb.append(counter);
+                            ansSb.append(currentCh);
+                        } else {
+                            ansSb.append(currentCh);
+                        }
+                        counter = 1;
+                    }
+                    currentCh = charr[i];
+                    if (i == charr.length - 1) {
+                        ansSb.append(charr[i]);
+                    }
+                } else {
+                    counter++;
+                    if (i == charr.length - 1) {
+                        if (counter > 1) {
+                            ansSb.append(counter);
+                            ansSb.append(currentCh);
+                        } else {
+                            ansSb.append(currentCh);
+                        }
+                    }
+                }
+            }
+
+            return ansSb.toString();
+        }
+
+        public static String solution(String s) {
+            Matcher m = Pattern.compile("([a-z])\\1*").matcher(s);
+            String result = "";
+            while (m.find()) {
+                int len = m.group(0).length();
+                char cha = m.group(0).charAt(0);
+                result += (len == 1 ? "" : len) + "" + cha;
+            }
+            return result;
+        }
+    }
+
+    public static class chessKnight_50 {
+        public static int solution(String cell) {
+            //https://imgur.com/a/PXkaY
+            var results = new int[]{2, 3, 4, 6, 8};
+            int dist1 = Math.min(Math.min(cell.charAt(0) - 'a', 'h' - cell.charAt(0)), 2);
+            int dist2 = Math.min(Math.min(cell.charAt(1) - '1', '8' - cell.charAt(1)), 2);
+
+            return results[dist1 + dist2];
+        }
+    }
+
+    public static class deleteDigit_51 {
+        public static int solution(int n) {
+            int max = 0;
+            for (int t = 1; t < n; t *= 10)
+                max = Math.max(n / 10 / t * t + n % t, max);
+            return max;
+        }
+    }
+
+    public static class longestWord_52 {
+        public static String solution(String text) {
+            var s = text.split("[^a-zA-Z]");
+            String t = "";
+            for (int i = 0; i < s.length; i++) {
+                if (s[i].length() > t.length())
+                    t = s[i];
+            }
+            return t;
+        }
+
+        public static String goodSolution(String text) {
+            return Arrays.stream(text.split("\\W+")).max((a, b) -> a.length() - b.length()).get();
+        }
+    }
+
+    public static class validTime_53 {
+        public static boolean solution(String time) {
+            return time.matches("([01]\\d|2[0-3]):[0-5]\\d");
+        }
+    }
+
+    public static class sumUpNumbers_54 {
+        public static int solution(String inputString) {
+            var nums = inputString.split("[^0-9]");
+
+            int ans = 0;
+            for (String str : nums) {
+                try {
+                    ans += Integer.parseInt(str);
+                } catch (Exception ignored) {
+
+                }
+            }
+            return ans;
+        }
+
+        public static int goodSolution(String inputString) {
+            return Arrays.stream(inputString.split("\\D+")).
+                    filter(s -> !s.isEmpty()).
+                    mapToInt(Integer::parseInt).sum();
+        }
+    }
+
+    public static class differentSquares_55 {
+        public static int mySolution(int[][] matrix) {
+            Set<String> strSet = new HashSet<>();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < matrix.length - 1; i++) {
+                for (int j = 0; j < matrix[i].length - 1; j++) {
+                    sb.setLength(0);
+                    sb.append(matrix[i][j]);
+                    sb.append(matrix[i][j + 1]);
+                    sb.append(matrix[i + 1][j]);
+                    sb.append(matrix[i + 1][j + 1]);
+                    strSet.add(sb.toString());
+                }
+            }
+
+            return strSet.size();
         }
     }
 
