@@ -1,5 +1,6 @@
 package intro;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -398,4 +399,93 @@ public class Solutions {
         }
     }
 
+    public static class digitsProduct_56 {
+        public static int solution(int product) {
+            if (product == 0)
+                return 10;
+            if (product < 10)
+                return product;
+
+            StringBuilder r = new StringBuilder();
+            for (int d = 9; d > 1; d--)
+                for (; product % d == 0; product /= d)
+                    r.insert(0, d);
+            return product == 1 ? Integer.parseInt(r.toString()) : -1;
+        }
+    }
+
+    public static class fileNaming_57 {
+        public static String[] solution(String[] names) {
+            List<String> input = Arrays.asList(names);
+            List<String> result = new ArrayList<>();
+            for (String s : names) {
+                if (result.contains(s)) {
+                    int i = 1;
+                    for (; result.contains(s + "(" + i + ")"); i++) {
+
+                    }
+                    s += "(" + i + ")";
+                }
+                result.add(s);
+            }
+            return result.toArray(new String[0]);
+        }
+    }
+
+    public static class messageFromBinaryCode_58 {
+        public static String solution(String code) {
+            return new String(new BigInteger(code, 2).toByteArray());
+        }
+    }
+
+    public static class spiralNumbers_59 {
+        public static int[][] solution(int n) {
+            int[][] array = new int[n][n];
+
+            int left = 0;
+            int right = n - 1;
+            int top = 0;
+            int down = n - 1;
+
+            for (int counter = 1; counter <= n * n; ) {
+                for (int x = left; x <= right; x++)
+                    array[top][x] = counter++;
+                top++;
+
+                for (int y = top; y <= down; y++)
+                    array[y][right] = counter++;
+                right--;
+
+                for (int x = right; x >= left; x--)
+                    array[down][x] = counter++;
+                down--;
+
+                for (int y = down; y >= top; y--)
+                    array[y][left] = counter++;
+                left++;
+            }
+
+            return array;
+        }
+    }
+
+    public static class sudoku_60 {
+        public static boolean solution(int[][] grid) {
+            int[] rowsSumary = new int[9];
+            int[] colsSumary = new int[9];
+            int[] sectSumary = new int[9];
+            for (int row = 0; row < 9; row++) {
+                for (int col = 0; col < 9; col++) {
+                    rowsSumary[row] += grid[row][col];
+                    colsSumary[col] += grid[row][col];
+                    sectSumary[(col / 3) + ((row / 3) * 3)] += grid[row][col];
+                }
+            }
+            return Arrays.stream(grid[0]).distinct().count() == 9 &&
+                    Arrays.stream(rowsSumary).allMatch(x -> x == 45) &&
+                    Arrays.stream(colsSumary).allMatch(x -> x == 45) &&
+                    Arrays.stream(sectSumary).allMatch(x -> x == 45);
+        }
+    }
 }
+
